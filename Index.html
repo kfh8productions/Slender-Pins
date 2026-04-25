@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Slender Pins — Task Board</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0e0e;
+    --surface: #1a1a1a;
+    --surface2: #222;
+    --border: #2a2a2a;
+    --border2: #333;
+    --text: #e8e8e0;
+    --muted: #666;
+    --muted2: #444;
+    --urgent1: #ff2b2b;
+    --urgent2: #ff6a00;
+    --urgent3: #ffc300;
+    --neutral: #888;
+    --calm1: #3a9bd5;
+    --calm2: #2563eb;
+    --calm3: #1e3a8a;
+    --green: #22c55e;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 18px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .band-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.9rem;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .you-chip {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border2);
+    padding: 3px 9px;
+    border-radius: 100px;
+    cursor: pointer;
+    background: none;
+    font-family: 'DM Mono', monospace;
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .you-chip:hover { border-color: var(--text); color: var(--text); }
+  .sync-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.53rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .sync-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    flex-shrink: 0;
+    transition: background 0.4s;
+  }
+  .sync-dot.live  { background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+  .sync-dot.error { background: var(--urgent1); }
+  .add-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.63rem;
+    padding: 6px 13px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: border-color 0.2s;
+    white-space: nowrap;
+  }
+  .add-btn:hover { border-color: var(--text); }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .legend-label { font-size: 0.53rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-right: 2px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; font-size: 0.53rem; color: var(--muted); }
+  .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* ── FILTERS ── */
+  .filter-bar {
+    padding: 8px 20px;
+    display: flex;
+    gap: 7px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.57rem;
+    padding: 3px 11px;
+    cursor: pointer;
+    border-radius: 100px;
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+  .filter-chip.active { border-color: var(--text); color: var(--text); }
+
+  /* ── BOARD ── */
+  .board {
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 2px 4px;
+  }
+  .section-divider span { font-size: 0.53rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted2); }
+  .section-divider hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+
+  /* ── TASK CARD ── */
+  .task {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: opacity 0.3s;
+  }
+  .task.completed { opacity: 0.38; }
+  .task.completed .task-title { text-decoration: line-through; color: var(--muted); }
+
+  .task-main {
+    padding: 12px 13px;
+    display: grid;
+    grid-template-columns: 5px 1fr auto;
+    gap: 11px;
+    align-items: start;
+    cursor: pointer;
+  }
+
+  .urgency-bar {
+    width: 5px;
+    border-radius: 3px;
+    align-self: stretch;
+    min-height: 36px;
+    position: relative;
+  }
+  .mine-dot {
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: white;
+    display: none;
+    box-shadow: 0 0 4px rgba(255,255,255,0.6);
+  }
+  .task.is-mine .mine-dot { display: block; }
+
+  .task-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .task-title { font-size: 0.82rem; font-weight: 500; line-height: 1.3; letter-spacing: 0.02em; word-break: break-word; }
+  .task-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .task-assignee { font-size: 0.57rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .task-due { font-size: 0.57rem; color: var(--muted); letter-spacing: 0.05em; }
+  .task-due.overdue { color: var(--urgent1); }
+
+  /* Latest status on card */
+  .task-status-preview {
+    font-size: 0.64rem;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    line-height: 1.45;
+    padding: 7px 13px 10px 29px;
+    border-top: 1px solid var(--border);
+    display: none;
+    font-style: italic;
+  }
+  .task-status-preview.show { display: block; }
+  .status-author {
+    font-style: normal;
+    color: var(--text);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-right: 5px;
+  }
+  .status-time {
+    color: var(--muted2);
+    margin-left: 5px;
+    font-size: 0.52rem;
+    font-style: normal;
+  }
+
+  /* Subtask strip on card */
+  .subtask-strip {
+    padding: 0 13px 10px 29px;
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .subtask-strip.show { display: flex; }
+  .subtask-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.64rem;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+    cursor: pointer;
+  }
+  .subtask-row.done-sub { text-decoration: line-through; opacity: 0.45; }
+  .subtask-check {
+    width: 13px; height: 13px;
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .subtask-row.done-sub .subtask-check { background: var(--border2); }
+  .subtask-check-icon { display: none; }
+  .subtask-row.done-sub .subtask-check-icon { display: block; }
+
+  /* Task actions col */
+  .task-actions { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; padding-top: 1px; }
+  .heat-btn {
+    background: none; border: none;
+    font-size: 0.53rem; color: var(--muted2);
+    cursor: pointer; font-family: 'DM Mono', monospace;
+    padding: 1px 3px; transition: color 0.15s; line-height: 1;
+  }
+  .heat-btn:hover { color: var(--text); }
+  .complete-btn {
+    width: 19px; height: 19px;
+    border: 1px solid var(--border2);
+    border-radius: 50%; background: none;
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: border-color 0.2s, background 0.2s;
+    margin-top: 1px; flex-shrink: 0;
+  }
+  .complete-btn:hover { border-color: var(--green); }
+  .task.completed .complete-btn { background: var(--muted2); border-color: var(--muted2); }
+  .complete-icon { display: none; }
+  .task.completed .complete-icon { display: block; }
+
+  /* Urgency colours */
+  .u1 { background: var(--urgent1); box-shadow: 0 0 7px rgba(255,43,43,0.4); }
+  .u2 { background: var(--urgent2); box-shadow: 0 0 5px rgba(255,106,0,0.3); }
+  .u3 { background: var(--urgent3); box-shadow: 0 0 5px rgba(255,195,0,0.2); }
+  .u4 { background: var(--neutral); }
+  .u5 { background: var(--calm1); }
+  .u6 { background: var(--calm2); }
+  .u7 { background: var(--calm3); }
+
+  /* ── EMPTY ── */
+  .empty-msg {
+    text-align: center; padding: 56px 20px;
+    color: var(--muted); font-size: 0.68rem;
+    letter-spacing: 0.1em; display: none;
+  }
+  .empty-msg.show { display: block; }
+  .empty-msg .big { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; display: block; opacity: 0.1; margin-bottom: 6px; }
+
+  /* ── NAME PICKER ── */
+  .name-overlay {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+  .name-overlay.hidden { display: none; }
+  .name-overlay h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .name-overlay p {
+    font-size: 0.63rem;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    text-align: center;
+  }
+  .name-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 320px;
+  }
+  .name-btn {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.9rem;
+    letter-spacing: 0.06em;
+    padding: 22px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s, border-color 0.15s;
+    text-align: center;
+  }
+  .name-btn:hover { background: var(--surface2); border-color: var(--text); }
+
+  /* ── MODAL ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(5px);
+    display: none; align-items: flex-end; justify-content: center;
+    z-index: 100;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: #181818;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    padding: 22px 20px 36px;
+    width: 100%; max-width: 680px;
+    animation: slideUp 0.22s ease;
+    max-height: 92vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @keyframes slideUp { from { transform: translateY(36px); opacity: 0; } }
+
+  .modal-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+  .modal h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.05em; }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 1rem; cursor: pointer; padding: 0 4px; font-family: 'DM Mono', monospace; line-height: 1; }
+
+  .field { margin-bottom: 13px; }
+  .field label { display: block; font-size: 0.57rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 5px; }
+  .field input {
+    width: 100%; background: var(--bg);
+    border: 1px solid var(--border); color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 0.78rem;
+    padding: 9px 11px; outline: none; border-radius: 2px;
+    transition: border-color 0.15s; -webkit-appearance: none;
+  }
+  .field input:focus { border-color: var(--text); }
+  .field input::placeholder { color: var(--muted2); }
+
+  .urgency-picker { display: flex; gap: 7px; }
+  .urgency-pip {
+    flex: 1; height: 25px; border-radius: 3px;
+    cursor: pointer; opacity: 0.28;
+    transition: opacity 0.15s, transform 0.15s; border: none;
+  }
+  .urgency-pip.selected { opacity: 1; transform: scaleY(1.2); }
+  .pip1{background:var(--urgent1);} .pip2{background:var(--urgent2);}
+  .pip3{background:var(--urgent3);} .pip4{background:var(--neutral);}
+  .pip5{background:var(--calm1);}  .pip6{background:var(--calm2);}
+  .pip7{background:var(--calm3);}
+  .urgency-label-text { font-size: 0.52rem; letter-spacing: 0.08em; margin-top: 5px; color: var(--muted); text-align: center; }
+
+  .modal-section-label {
+    font-size: 0.57rem; color: var(--muted); letter-spacing: 0.15em;
+    text-transform: uppercase; margin: 16px 0 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .modal-section-label hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+
+  /* Subtasks in modal */
+  .subtask-list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 7px; }
+  .subtask-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 7px 10px; border-radius: 2px;
+  }
+  .subtask-item span { flex: 1; font-size: 0.72rem; letter-spacing: 0.02em; word-break: break-word; }
+  .subtask-item.done-sub span { text-decoration: line-through; color: var(--muted); }
+  .subtask-toggle {
+    width: 14px; height: 14px;
+    border: 1px solid var(--border2); border-radius: 3px;
+    background: none; flex-shrink: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .subtask-item.done-sub .subtask-toggle { background: var(--border2); }
+  .subtask-toggle svg { display: none; }
+  .subtask-item.done-sub .subtask-toggle svg { display: block; }
+  .subtask-del {
+    background: none; border: none; color: var(--muted2);
+    font-size: 0.68rem; cursor: pointer; padding: 0 2px;
+    font-family: 'DM Mono', monospace; transition: color 0.15s; flex-shrink: 0;
+  }
+  .subtask-del:hover { color: var(--urgent1); }
+  .add-row { display: flex; gap: 7px; }
+  .add-row input { flex: 1; }
+  .add-row-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; padding: 8px 11px; cursor: pointer;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    transition: border-color 0.15s, color 0.15s; white-space: nowrap;
+  }
+  .add-row-btn:hover { border-color: var(--text); color: var(--text); }
+
+  /* Status log in modal */
+  .status-log { display: flex; flex-direction: column; gap: 0; margin-bottom: 6px; }
+  .status-entry {
+    border-left: 2px solid var(--border2);
+    padding: 6px 10px;
+    margin-bottom: 5px;
+  }
+  .status-entry-meta { font-size: 0.53rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+  .status-entry-text { font-size: 0.7rem; line-height: 1.5; font-style: italic; color: var(--text); }
+  .status-empty { font-size: 0.62rem; color: var(--muted2); letter-spacing: 0.06em; font-style: italic; padding: 2px 0; }
+
+  /* Modal actions */
+  .modal-actions { display: flex; gap: 7px; margin-top: 18px; flex-wrap: wrap; }
+  .btn-save {
+    flex: 1; background: var(--text); color: var(--bg); border: none;
+    font-family: 'DM Mono', monospace; font-size: 0.67rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 11px; cursor: pointer; transition: opacity 0.15s;
+    min-width: 80px;
+  }
+  .btn-save:hover { opacity: 0.85; }
+  .btn-complete {
+    background: none; border: 1px solid var(--border2); color: var(--muted);
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 11px 13px; cursor: pointer; transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .btn-complete:hover { border-color: var(--green); color: var(--green); }
+  .btn-complete.is-completed { color: var(--muted2); border-color: var(--muted2); }
+  .btn-cancel {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 11px 13px; cursor: pointer;
+  }
+  .btn-delete {
+    background: none; border: 1px solid #2a1111; color: #663333;
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 11px 11px; cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-delete:hover { border-color: var(--urgent1); color: var(--urgent1); }
+</style>
+</head>
+<body>
+
+<!-- NAME PICKER -->
+<div class="name-overlay" id="nameOverlay">
+  <h1>Slender Pins</h1>
+  <p>Who are you?</p>
+  <div class="name-grid">
+    <button class="name-btn" onclick="pickName('Alex')">Alex</button>
+    <button class="name-btn" onclick="pickName('Ash')">Ash</button>
+    <button class="name-btn" onclick="pickName('Ed')">Ed</button>
+    <button class="name-btn" onclick="pickName('Dan')">Dan</button>
+  </div>
+</div>
+
+<header>
+  <span class="band-name">Slender Pins</span>
+  <div class="header-right">
+    <button class="you-chip" id="youChip" onclick="resetName()">you: —</button>
+    <div class="sync-row">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncLabel">—</span>
+    </div>
+    <button class="add-btn" onclick="openModal()">+ Task</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="legend-label">Urgency:</span>
+  <div class="legend-item"><div class="legend-dot" style="background:#ff2b2b"></div> fire</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ff6a00"></div> soon</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ffc300"></div> this week</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#888"></div> whenever</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3a9bd5"></div> low</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2563eb"></div> someday</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1e3a8a"></div> backlog</div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-chip active" onclick="setFilter('all',this)">All</button>
+  <button class="filter-chip" onclick="setFilter('mine',this)">Mine</button>
+  <button class="filter-chip" onclick="setFilter('open',this)">Open</button>
+  <button class="filter-chip" onclick="setFilter('completed',this)">Completed</button>
+</div>
+
+<div class="board" id="board">
+  <div class="empty-msg" id="emptyMsg"><span class="big">NO TASKS</span>hit + task to get started</div>
+</div>
+
+<!-- TASK MODAL -->
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">New Task</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="field">
+      <label>Task</label>
+      <input type="text" id="f-title" placeholder="e.g. Book studio time" />
+    </div>
+    <div class="field">
+      <label>Assigned to</label>
+      <input type="text" id="f-assignee" placeholder="e.g. Alex, Ash…" />
+    </div>
+    <div class="field">
+      <label>Due date (optional)</label>
+      <input type="date" id="f-due" />
+    </div>
+    <div class="field">
+      <label>Urgency</label>
+      <div class="urgency-picker">
+        <button class="urgency-pip pip1" data-u="1" onclick="selectUrgency(1)"></button>
+        <button class="urgency-pip pip2" data-u="2" onclick="selectUrgency(2)"></button>
+        <button class="urgency-pip pip3" data-u="3" onclick="selectUrgency(3)"></button>
+        <button class="urgency-pip pip4 selected" data-u="4" onclick="selectUrgency(4)"></button>
+        <button class="urgency-pip pip5" data-u="5" onclick="selectUrgency(5)"></button>
+        <button class="urgency-pip pip6" data-u="6" onclick="selectUrgency(6)"></button>
+        <button class="urgency-pip pip7" data-u="7" onclick="selectUrgency(7)"></button>
+      </div>
+      <div class="urgency-label-text" id="urgency-label">whenever</div>
+    </div>
+
+    <div class="modal-section-
