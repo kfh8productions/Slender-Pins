@@ -49,7 +49,7 @@ button { cursor: pointer; font-family: 'DM Mono', monospace; }
   gap: 0;
   padding: 40px 24px;
 }
-#nameOverlay.hidden { display: none; }
+#nameOverlay.hidden { display: none !important; pointer-events: none; }
 #nameOverlay h1 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2.6rem;
@@ -519,6 +519,4 @@ function openModal(id) {
   document.getElementById('modalOverlay').classList.add('open');
   setTimeout(()=>document.getElementById('fTitle').focus(),120);
 }
-function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); editId=null; }
-
-// ── M
+function closeModal() { document.getElementById('modalOverlay').classList.remove
