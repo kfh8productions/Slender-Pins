@@ -257,8 +257,16 @@ async function fbDel(id)   { await fetch(api('/'+id),{method:'DELETE'}); }
 
 // Poll
 async function poll() {
-  try { tasks=(await fbGet())||{}; syncState('live'); render(); }
-  catch(e) { syncState('error'); }
+  try {
+    const data = await fbGet();
+    tasks = data || {};
+    document.getElementById('syncLabel').textContent = 'live (' + Object.keys(tasks).length + ')';
+    syncState('live');
+    render();
+  } catch(e) {
+    document.getElementById('syncLabel').textContent = 'ERR: ' + e.status + ' ' + e.url;
+    syncState('error');
+  }
 }
 function startPoll() { poll(); pollTimer=setInterval(poll,POLL); }
 function syncState(s) {
@@ -335,12 +343,4 @@ function addSub() {
 function renderMLog() {
   const el=document.getElementById('sLog');
   if(!mLog.length){el.innerHTML='<div class="sempty">No updates yet.</div>';return;}
-  el.innerHTML=[...mLog].reverse().map(e=>`<div class="sentry"><div class="sentry-meta">${esc(e.author)} · ${rel(e.ts)}</div><div class="sentry-text">${esc(e.text)}</div></div>`).join('');
-}
-function postStatus() {
-  const inp=document.getElementById('sInput'),v=inp.value.trim(); if(!v)return;
-  mLog.push({id:uid(),author:user||'Someone',text:v,ts:Date.now()}); inp.value=''; renderMLog(); inp.focus();
-}
-
-// CRUD
-  
+  el.innerHTML=[...mLog].reverse().map(e=>`<div class="sentry"><div class="sentry-meta">${esc(e.author)} · ${rel(e.ts)}</div><div class="sentry-text">${esc(e.text)}</div></div>`).join('  
