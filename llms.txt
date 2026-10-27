@@ -1,0 +1,53 @@
+# Slender Pins
+
+> Slender Pins are an underground rock band from London, UK. They make post-punk, big beat and surf rock, influenced by the Stooges, the Velvet Underground and Gang of Four. Known for bombastic dance-rock energy, a hint of post-punk menace, and theatrical live shows led by frontman Ash.
+
+## Key facts
+- Name: Slender Pins
+- Type: rock band (MusicGroup)
+- Location: London, UK
+- Genres: post-punk, big beat, surf rock, indie rock, disco punk, underground rock, new wave
+- Members: Ash (vocals), Alex (guitar, co-songwriter), Ed (drums), Dan (bass)
+- Songwriting: Alex and Ash
+- Influences: the Stooges, the Velvet Underground, Gang of Four
+- Radio support (per the band's press kit): BBC Music Introducing, This Feeling, Amazing Radio
+- Current project: self-produced EP "Hell Is Nervous", due soon
+- Contact for bookings and press: slenderpins@gmail.com
+
+## Live
+- Friday 4 December 2026, doors 7:30pm: The Jones, Sub Couple, Slender Pins, The Vivettes, DJ Fuzz. Dublin Castle, 94 Parkway, Camden Town, London NW1 7AN. 18 and over. Tickets: https://wegottickets.com/f/27905
+
+## Music
+- [Get Your Hooks In Me](https://open.spotify.com/track/38F0Hjm4U0DsQ585GNZTkF): lead single and disco-punk track from the EP "Hell Is Nervous". Music video filmed at Dublin Castle, Camden: https://youtu.be/a1r4DnOPMu8
+- [So Happy (90% Of The Time)](https://open.spotify.com/track/0WZCrxRzOlMgVGVcssCdK7)
+- [Apprentice To Life](https://open.spotify.com/track/2QqLM0ZQ50YHGAt3CCxMlX)
+- [Bandcamp](https://slenderpins.bandcamp.com/)
+- [Spotify artist page](https://open.spotify.com/artist/18YAsKKoVqnkFvn2el3D5Q)
+
+## What the press says
+Quotes are verbatim from the linked articles.
+
+- "Hopelessly frenetic. Relentlessly optimistic." Connor Faulkner, Rave Reviews, 27 February 2026. https://ravereviews.substack.com/p/listen-to-slender-pins-just-say-yes
+- "The London 4-piece blend a mixture of punk and rock and roll, to raucous effect." Julia Mason, Play It Loud UK, 26 June 2021. https://playitlouduk.com/slender-pins-dancing-mania
+- "Slender Pins bring forth all the best bits of genres like surf rock, new wave and post-punk…" Molly Tie, Punktuation, 22 September 2022. https://www.punktuationmag.com/slender-pins-new-single-guarantees-100-happiness/
+- "Filled with riffs that any punk band of the late 70’s wishes they’d written" (on the single). Teri Woods, Moths and Giraffes, 23 September (year not shown). https://www.mothsandgiraffes.com/theactualcontent/slender-pins-pretty-optimistic-guys
+- "It’s punk music designed for modern ears yet is reminiscent of artists such as The B-52’s." Kieran Webber, Clunk Magazine, 19 August 2020. https://clunkmag.com/slender-pins-apprentice-for-life/
+- "Each track is adrenalized to its core, and transcends genre labels entirely." Lolly Rockly, RAMzine, 25 August 2020. https://ramzine.co.uk/features/the-alchemy-of-slender-pins/
+- "combine garage rock with a sprinkle of punk to make a glorious noise perfect for the dancefloor." Julia Mason, God Is In The TV, 4 March 2022. https://www.godisinthetvzine.co.uk/2022/03/04/introducing-slender-pins/
+
+- "Their live gigs have been described as “organised chaos”, surely they are the best type." Julia Mason, TV Obsessive, 12 October 2020. https://tvobsessive.com/2020/10/12/slender-pins-their-vision-of-the-modern-world/
+- "Slender Pins are a London, UK, based new wave indie band with loud instruments and a vivacious front man." The Songbird HQ, The Songbird HQ, 14 July 2021. https://thesongbirdhq.com/2021/07/14/slender-pins/
+- "Sonically akin to Roxy Music and Mott the Hoople, Slender Pins adorned no sequins, makeup or other glamorous accessories." Patrick Malone, Joyzine, 19 June 2021. https://joyzine.org/2021/06/19/single-review-slender-pins-dancing-mania-i-want-to-want-to-dance/
+- "Regardless of what they desire, they are a tight and infectious indie band." Patrick Malone, Joyzine, 19 June 2021. https://joyzine.org/2021/06/19/single-review-slender-pins-dancing-mania-i-want-to-want-to-dance/
+- "Lead singer Ash swaps out Crosby's croon for his own trademark glam punk howl" Julia Mason (The Decibel Decoder), Blowtorch Records, 17 December 2024. https://www.blowtorchrecords.com/post/new-music-review-singles-from-chest-ekkstacy-and-slender-pins
+
+Other coverage:
+- Silent Radio, video for "Apprentice to Life": https://www.silentradio.co.uk/08/11/london-4-piece-slender-pins-unveil-video-for-new-single-apprentice-to-life/
+- TV Obsessive, "Who To Watch For in 2021": https://tvobsessive.com/2021/01/11/slender-pins-music-to-listen-out-for-in-2021/
+- Gigradar, "Introducing Slender Pins" (2019): https://gigradar.co.uk/2019/05/30/introducing-slenderpins/
+
+## Links
+- Website: https://slenderpins.netlify.app/
+- Instagram: https://www.instagram.com/slenderpins
+- Facebook: https://www.facebook.com/slenderpins
+- Video: https://www.facebook.com/watch/?v=950353710981855
